@@ -1,0 +1,52 @@
+{% extends 'admin/change_form.html' %}
+{% block after_field_sets %}
+
+<script type="text/javascript">
+	addEventListener('DOMContentLoaded', ()=>{
+		var toppingOption = document.querySelector('#id_toppingOption');
+		var maxToppings = document.querySelector('#id_maxToppings').parentElement;
+		var toppings = document.querySelector('.form-row.field-toppings');
+
+		setFieldsVisibility();
+
+		toppingOption.addEventListener('change', ()=>{
+			setFieldsVisibility();
+		});
+
+		function setFieldsVisibility(){
+			var selectedOption = toppingOption.options[toppingOption.selectedIndex].value;
+			if (selectedOption == 0 || selectedOption == 3){
+				toppings.style.display = "none";
+				maxToppings.style.display = "none";
+			};
+			if (selectedOption == 1){
+				toppings.style.display = "block";
+				maxToppings.style.display = "none";
+			};
+			if (selectedOption == 2){
+				toppings.style.display = "none";
+				maxToppings.style.display = "block";
+			};
+		}
+		/*if toppingOption == '0':
+			 #set maxtoppings & toppings to disabled?how?
+			
+		elif toppingOption == '1':
+			#allow admin to select from all available toppings to show only those to user. 
+			#how? maxtoppings to disabled
+			#toppings enabled only
+			
+		elif toppingOption == '2':
+			#admin doesn't have to preselect the toppings
+			#maxtoppings to enabled only
+			#toppings disabled
+			
+		elif toppingOption == '3':
+			#maxtoppings to be set to the number of toppings- disabled
+			#toppings disabled
+		*/
+
+	});
+</script>
+{{ block.super }}
+{% endblock after_field_sets %}

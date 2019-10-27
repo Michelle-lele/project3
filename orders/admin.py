@@ -12,6 +12,7 @@ admin.site.register(Topping, ToppingAdmin)
 class PizzaAdmin(admin.ModelAdmin):
 	list_display = ('type','name','size','toppingOption','price')
 	list_filter = ('type', 'size', 'toppingOption')
+	change_form_template = 'admin/orders/orders_change_form.html'
 	fieldsets = (
         (None, {
             'fields': ('name',('type', 'size'), 'price')
@@ -21,6 +22,7 @@ class PizzaAdmin(admin.ModelAdmin):
             'fields': (('toppingOption', 'maxToppings'), 'toppings'),
         }),
     )
+
 
 admin.site.register(Pizza, PizzaAdmin)
 
