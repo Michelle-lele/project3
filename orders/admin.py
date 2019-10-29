@@ -27,9 +27,18 @@ class PizzaAdmin(admin.ModelAdmin):
 admin.site.register(Pizza, PizzaAdmin)
 
 class SubAdmin(admin.ModelAdmin):
-	list_display = ('name', 'size', 'price')
+	list_display = ('name', 'size', 'toppingOption', 'price')
 	list_filter = ('size',)
-	
+	change_form_template = 'admin/orders/orders_change_form.html'
+	fieldsets = (
+        (None, {
+            'fields': ('name', 'size', 'price')
+        }),
+        ('Advanced options', {
+            'classes': ('collapse',),
+            'fields': (('toppingOption', 'maxToppings'), 'toppings'),
+        }),
+    )
 
 admin.site.register(Sub, SubAdmin)
 

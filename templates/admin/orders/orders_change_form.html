@@ -2,10 +2,14 @@
 {% block after_field_sets %}
 
 <script type="text/javascript">
+	//used in both Pizzas and Subs admin pages
 	addEventListener('DOMContentLoaded', ()=>{
 		var toppingOption = document.querySelector('#id_toppingOption');
-		var maxToppings = document.querySelector('#id_maxToppings').parentElement;
-		var toppings = document.querySelector('.form-row.field-toppings');
+		var maxToppingsDiv = document.querySelector('#id_maxToppings').parentElement;
+		var toppingsDiv = document.querySelector('.form-row.field-toppings');
+		var maxToppingsInput = document.querySelector('#id_maxToppings');
+		var toppingsSelect = document.querySelector('.form-row.field-toppings').getElementsByTagName('select')[0];
+
 
 		setFieldsVisibility();
 
@@ -13,39 +17,28 @@
 			setFieldsVisibility();
 		});
 
+
 		function setFieldsVisibility(){
+			//('0','No toppings'), ('1','Pre-selected'), ('2','No more than..'), ('3','Select from all'), ('4', 'Additions')
 			var selectedOption = toppingOption.options[toppingOption.selectedIndex].value;
 			if (selectedOption == 0 || selectedOption == 3){
-				toppings.style.display = "none";
-				maxToppings.style.display = "none";
+				toppingsDiv.style.display = "none";
+				maxToppingsDiv.style.display = "none";
+				maxToppingsInput.value = null;
+				toppingsSelect.value = null;
 			};
-			if (selectedOption == 1){
-				toppings.style.display = "block";
-				maxToppings.style.display = "none";
+			if (selectedOption == 1 || selectedOption == 4){
+				toppingsDiv.style.display = "block";
+				maxToppingsDiv.style.display = "none";
+				maxToppingsInput.value = null;
 			};
 			if (selectedOption == 2){
-				toppings.style.display = "none";
-				maxToppings.style.display = "block";
+				toppingsDiv.style.display = "none";
+				maxToppingsDiv.style.display = "block";
+				maxToppingsInput.value = 1;
+				toppingsSelect.value = null;
 			};
 		}
-		/*if toppingOption == '0':
-			 #set maxtoppings & toppings to disabled?how?
-			
-		elif toppingOption == '1':
-			#allow admin to select from all available toppings to show only those to user. 
-			#how? maxtoppings to disabled
-			#toppings enabled only
-			
-		elif toppingOption == '2':
-			#admin doesn't have to preselect the toppings
-			#maxtoppings to enabled only
-			#toppings disabled
-			
-		elif toppingOption == '3':
-			#maxtoppings to be set to the number of toppings- disabled
-			#toppings disabled
-		*/
-
 	});
 </script>
 {{ block.super }}
