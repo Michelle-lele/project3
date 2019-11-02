@@ -1,0 +1,14 @@
+{% extends "orders/base.html" %}
+{% block body %}
+<div>
+	<h1>Registration</h1>
+	<form action="" method="POST">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button type="submit">Sign up</button>
+	</form>
+</div>
+<div>
+	<small>Already have an account? <a href="#">Sign In!</a></small>
+</div>
+{% endblock body %}
