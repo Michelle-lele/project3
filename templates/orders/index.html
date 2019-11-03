@@ -1,4 +1,69 @@
 {% extends "orders/base.html" %}
+{% load crispy_forms_tags %}
 {% block body %}
-
+	{% if pizzas %}
+	<h1>Pizza Regular</h1>
+	<table class="table">
+		<th>Type</th>
+		<th>Name</th>
+		<th>Size</th>
+		<th>Price</th>
+		<th></th>
+		{% for pizza in pizzas %}
+			<tr>
+				<td>{{ pizza.type }}</td>
+				<td>{{ pizza.name }}</td>
+				<td>{{ pizza.size }}</td>
+				<td>{{ pizza.price }}</td>
+				<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-name="{{ pizza }}">Add</button></td>
+			</tr>
+		{% endfor %}
+	</table>
+	{% endif %}
+	{% if subs %}
+	<h1>Subs</h1>
+	<table class="table">
+		<th>Name</th>
+		<th>Size</th>
+		<th>Price</th>
+		<th></th>
+		{% for sub in subs %}
+			<tr>
+				<td>{{ sub.name }}</td>
+				<td>{{ sub.size }}</td>
+				<td>{{ sub.price }}</td>
+				<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-name="{{ sub }}">Add</button></td>
+			</tr>
+			{% if sub.toppings %}
+				{% for topping in sub.toppings.all %}
+					<tr>
+						<td>++ {{ topping.name }}</td>
+						<td></td>
+						<td> {{ topping.price }}</td>
+					</tr>
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	</table>
+	{% endif %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add to Cart</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock body %}

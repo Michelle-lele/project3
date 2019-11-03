@@ -1,14 +1,19 @@
-from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-import logging
 from .forms import UserRegisterForm
-from django.contrib.auth.decorators import login_required
+from .models import Pizza, Sub
+
+import logging
 
 # Create your views here.
+@login_required
 def index(request):
-    return render(request, "orders/index.html")
+	pizzas = Pizza.objects.all()
+	subs = Sub.objects.all()
+	return render(request, "orders/index.html",
+		{'pizzas': pizzas,
+		'subs': subs})
 
 def register(request):
 	if request.method == 'POST':
@@ -22,7 +27,4 @@ def register(request):
 	else:
 		form = UserRegisterForm()
 	return render(request, "orders/register.html", {"form": form})
-
-@login_required
-def menu(request):
-	return render(request, "orders/menu.html")
+	
