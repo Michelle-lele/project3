@@ -1,0 +1,6 @@
+{% extends "orders/base.html" %}
+{% load crispy_forms_tags %}
+{% block body %}
+<h1>You have Signed Out</h1>
+<a href="{% url 'login' %}">Sign in again?</a>
+{% endblock body %}
