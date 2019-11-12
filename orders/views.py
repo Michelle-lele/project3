@@ -2,18 +2,22 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserRegisterForm
-from .models import Pizza, Sub
+from .models import pizzaType, Size, Pizza, Sub
 
 import logging
 
 # Create your views here.
 @login_required
 def index(request):
+	pizzaTypes = pizzaType.objects.all()
+	sizes = Size.objects.all()
 	pizzas = Pizza.objects.all()
 	subs = Sub.objects.all()
 	return render(request, "orders/index.html",
-		{'pizzas': pizzas,
-		'subs': subs})
+		{'pizzaTypes': pizzaTypes,
+		'sizes': sizes,
+		'pizzas': pizzas,
+		'subs': subs},)
 
 def register(request):
 	if request.method == 'POST':

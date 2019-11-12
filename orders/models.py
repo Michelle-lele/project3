@@ -30,7 +30,7 @@ class abstractToppingConfig(models.Model):
 
 
 class Size(models.Model):
-	size = models.CharField(max_length=64)
+	size = models.CharField(max_length=64, default="Small")
 
 	def __str__(self):
 		return f"{self.size}"

@@ -1,25 +1,35 @@
 {% extends "orders/base.html" %}
 {% load crispy_forms_tags %}
 {% block body %}
-	{% if pizzas %}
-	<h1>Pizza Regular</h1>
-	<table class="table">
-		<th>Type</th>
-		<th>Name</th>
-		<th>Size</th>
-		<th>Price</th>
-		<th></th>
-		{% for pizza in pizzas %}
-			<tr>
-				<td>{{ pizza.type }}</td>
-				<td>{{ pizza.name }}</td>
-				<td>{{ pizza.size }}</td>
-				<td>{{ pizza.price }}</td>
-				<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-name="{{ pizza }}">Add</button></td>
-			</tr>
-		{% endfor %}
-	</table>
-	{% endif %}
+
+{% if pizzas %}
+	{% for pizzaType in pizzaTypes %}
+		<h1>Pizza {{ pizzaType.type }}</h1>
+		<table class="table">
+			<th>Name</th>
+			<th>Size</th>
+			<th>Price</th>
+			<th></th>
+			{% for pizza in pizzas %}
+				{% ifequal pizza.type.type pizzaType.type %}
+					<tr>
+						<td>{{ pizza.name }}</td>
+						<td>
+							<select>
+							{% for size in sizes %}
+								<option>{{ size }}</option>
+							{% endfor %}
+							</select>
+						</td>
+						<td>{{ pizza.price }}</td>
+						<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ pizza.id }}">Add</button></td>
+					</tr>
+				{% endifequal %}
+			{% endfor %}
+		</table>
+	{% endfor %}
+	
+{% endif %}
 	{% if subs %}
 	<h1>Subs</h1>
 	<table class="table">
@@ -32,7 +42,7 @@
 				<td>{{ sub.name }}</td>
 				<td>{{ sub.size }}</td>
 				<td>{{ sub.price }}</td>
-				<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-name="{{ sub }}">Add</button></td>
+				<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ sub.id }}">Add</button></td>
 			</tr>
 			{% if sub.toppings %}
 				{% for topping in sub.toppings.all %}
@@ -56,12 +66,13 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        ...
+      <div class="modal-body" id="modal-body">
+        <form id="modal-options-form">
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Add to Cart</button>
+        <button type="button" class="btn btn-primary" type="submit">Add to Cart</button>
       </div>
     </div>
   </div>
