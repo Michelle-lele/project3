@@ -10,18 +10,18 @@ class ToppingAdmin(admin.ModelAdmin):
 admin.site.register(Topping, ToppingAdmin)
 
 class PizzaAdmin(admin.ModelAdmin):
-	list_display = ('type','name','price')
-	list_filter = ('type',)
+	list_display = ('type','name','size','toppingOption','price')
+	list_filter = ('type', 'size', 'toppingOption')
 	change_form_template = 'admin/orders/orders_change_form.html'
 	fieldsets = (
-        (None, {
-            'fields': ('name',('type', 'size'), 'price')
-        }),
-        ('Advanced options', {
-            'classes': ('collapse',),
-            'fields': (('toppingOption', 'maxToppings'), 'toppings'),
-        }),
-    )
+		(None, {
+			'fields': ('name',('type', 'size'), 'price')
+		}),
+		('Advanced options', {
+			'classes': ('collapse',),
+			'fields': (('toppingOption', 'maxToppings'), 'toppings'),
+		}),
+	)
 
 
 admin.site.register(Pizza, PizzaAdmin)
@@ -31,14 +31,14 @@ class SubAdmin(admin.ModelAdmin):
 	list_filter = ('size',)
 	change_form_template = 'admin/orders/orders_change_form.html'
 	fieldsets = (
-        (None, {
-            'fields': ('name', 'size', 'price')
-        }),
-        ('Advanced options', {
-            'classes': ('collapse',),
-            'fields': (('toppingOption', 'maxToppings'), 'toppings'),
-        }),
-    )
+		(None, {
+			'fields': ('name', 'size', 'price')
+		}),
+		('Advanced options', {
+			'classes': ('collapse',),
+			'fields': (('toppingOption', 'maxToppings'), 'toppings'),
+		}),
+	)
 
 admin.site.register(Sub, SubAdmin)
 
@@ -59,9 +59,9 @@ class dinnerPlatterAdmin(admin.ModelAdmin):
 admin.site.register(dinnerPlatter, dinnerPlatterAdmin)
 
 class pizzaTypeAdmin(admin.ModelAdmin):
-    list_display= ('type',)
+	list_display= ('type',)
 admin.site.register(pizzaType, pizzaTypeAdmin)
 
 class SizeAdmin(admin.ModelAdmin):
-    list_display= ('size',)
+	list_display= ('size',)
 admin.site.register(Size, SizeAdmin)

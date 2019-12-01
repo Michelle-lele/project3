@@ -5,16 +5,10 @@ from django.core.validators import validate_comma_separated_integer_list
 
 class abstractMenuItem(models.Model):
 	name = models.CharField(max_length=64)
-
-	class Meta:
-		abstract = True
-
-class abstractPrice(models.Model):
 	price = models.DecimalField(decimal_places=2,max_digits=10, default=0)
 
 	class Meta:
 		abstract = True
-
 
 class abstractToppingConfig(models.Model):
 	toppingOption = models.CharField(max_length=1, 
@@ -39,13 +33,6 @@ class abstractToppingConfig(models.Model):
 	class Meta:
 		abstract = True
 
-class abstractItemOption(abstractMenuItem, abstractPrice, abstractToppingConfig):
-	size  = models.ForeignKey("Size", on_delete=models.CASCADE, blank=True)
-	
-	class Meta:
-		abstract = True
-
-
 class Size(models.Model):
 	size = models.CharField(max_length=64, default="Small")
 
@@ -58,32 +45,34 @@ class pizzaType(models.Model):
 	def __str__(self):
 		return f"{self.type}"
 
-class Topping(abstractMenuItem, abstractPrice):
+class Topping(abstractMenuItem):
 	def __str__(self):
 		return f"{self.name}"
  
-class Pizza(abstractItemOption):
+class Pizza(abstractMenuItem, abstractToppingConfig):
 	type = models.ForeignKey(pizzaType, on_delete=models.CASCADE)
+	size = models.ForeignKey(Size, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return f"{self.type} {self.name}, {self.size}"
 
-class Sub(abstractItemOption):
+class Sub(abstractMenuItem, abstractToppingConfig):
+	size = models.ForeignKey(Size, on_delete=models.CASCADE)
 
 	additions = []
 
 	def __str__(self):
 		return f"{self.name} {self.size}"	
 
-class Pasta(abstractMenuItem, abstractPrice):
+class Pasta(abstractMenuItem):
 	def __str__(self):
 		return f"{self.name}"
 
-class Salad(abstractMenuItem, abstractPrice):
+class Salad(abstractMenuItem):
 	def __str__(self):
 		return f"{self.name}"
 
-class dinnerPlatter(abstractMenuItem, abstractPrice):
+class dinnerPlatter(abstractMenuItem):
 	size = models.ForeignKey(Size, on_delete=models.CASCADE)
 
 	def __str__(self):
