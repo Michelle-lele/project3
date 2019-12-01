@@ -2,15 +2,26 @@ from django.db import models
 from django.core.validators import validate_comma_separated_integer_list
 
 # Create your models here.
+
 class abstractMenuItem(models.Model):
 	name = models.CharField(max_length=64)
+
+	class Meta:
+		abstract = True
+
+class abstractPrice(models.Model):
 	price = models.DecimalField(decimal_places=2,max_digits=10, default=0)
 
 	class Meta:
 		abstract = True
 
+
 class abstractToppingConfig(models.Model):
-	toppingOption = models.CharField(max_length=1, choices=(('0','No toppings'), ('1','Pre-selected'), ('2','No more than..'), ('3','Select from all'), ('4', 'Additions')), default = ('0','No toppings'),help_text="Allow users select toppings", verbose_name = "Topping Options")
+	toppingOption = models.CharField(max_length=1, 
+		choices=(('0','No toppings'), ('1','Pre-selected'), ('2','No more than..'), ('3','Select from all'), ('4', 'Additions')), 
+		default = ('0','No toppings'),
+		help_text="Allow users select toppings", 
+		verbose_name = "Topping Options")
 	maxToppings =  models.PositiveSmallIntegerField(blank=True, null=True, default=0, verbose_name = "Max. toppings")
 	toppings = models.ManyToManyField("Topping", blank=True)
 
@@ -28,6 +39,12 @@ class abstractToppingConfig(models.Model):
 	class Meta:
 		abstract = True
 
+class abstractItemOption(abstractMenuItem, abstractPrice, abstractToppingConfig):
+	size  = models.ForeignKey("Size", on_delete=models.CASCADE, blank=True)
+	
+	class Meta:
+		abstract = True
+
 
 class Size(models.Model):
 	size = models.CharField(max_length=64, default="Small")
@@ -41,34 +58,32 @@ class pizzaType(models.Model):
 	def __str__(self):
 		return f"{self.type}"
 
-class Topping(abstractMenuItem):
+class Topping(abstractMenuItem, abstractPrice):
 	def __str__(self):
 		return f"{self.name}"
  
-class Pizza(abstractMenuItem, abstractToppingConfig):
+class Pizza(abstractItemOption):
 	type = models.ForeignKey(pizzaType, on_delete=models.CASCADE)
-	size = models.ForeignKey(Size, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return f"{self.type} {self.name}, {self.size}"
 
-class Sub(abstractMenuItem,abstractToppingConfig):
-	size = models.ForeignKey(Size, on_delete=models.CASCADE)
+class Sub(abstractItemOption):
 
 	additions = []
 
 	def __str__(self):
 		return f"{self.name} {self.size}"	
 
-class Pasta(abstractMenuItem):
+class Pasta(abstractMenuItem, abstractPrice):
 	def __str__(self):
 		return f"{self.name}"
 
-class Salad(abstractMenuItem):
+class Salad(abstractMenuItem, abstractPrice):
 	def __str__(self):
 		return f"{self.name}"
 
-class dinnerPlatter(abstractMenuItem):
+class dinnerPlatter(abstractMenuItem, abstractPrice):
 	size = models.ForeignKey(Size, on_delete=models.CASCADE)
 
 	def __str__(self):

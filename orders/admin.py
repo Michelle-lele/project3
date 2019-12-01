@@ -10,8 +10,8 @@ class ToppingAdmin(admin.ModelAdmin):
 admin.site.register(Topping, ToppingAdmin)
 
 class PizzaAdmin(admin.ModelAdmin):
-	list_display = ('type','name','size','toppingOption','price')
-	list_filter = ('type', 'size', 'toppingOption')
+	list_display = ('type','name','price')
+	list_filter = ('type',)
 	change_form_template = 'admin/orders/orders_change_form.html'
 	fieldsets = (
         (None, {
@@ -57,3 +57,11 @@ class dinnerPlatterAdmin(admin.ModelAdmin):
 	list_filter = ('size',)
 
 admin.site.register(dinnerPlatter, dinnerPlatterAdmin)
+
+class pizzaTypeAdmin(admin.ModelAdmin):
+    list_display= ('type',)
+admin.site.register(pizzaType, pizzaTypeAdmin)
+
+class SizeAdmin(admin.ModelAdmin):
+    list_display= ('size',)
+admin.site.register(Size, SizeAdmin)

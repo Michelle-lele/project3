@@ -22,7 +22,6 @@ def index(request):
 def register(request):
 	if request.method == 'POST':
 		form = UserRegisterForm(request.POST)
-		# logger.debug("I am here :D")
 		if form.is_valid():
 			form.save()
 			username = form.cleaned_data.get('username')
