@@ -10,9 +10,17 @@ class abstractMenuItem(models.Model):
 	class Meta:
 		abstract = True
 
+TOPPING_OPTIONS = (
+	('0','No toppings'), 
+	('1','Pre-selected'), 
+	('2','No more than..'), 
+	('3','Select from all'), 
+	('4','Additions')
+	)
+
 class abstractToppingConfig(models.Model):
 	toppingOption = models.CharField(max_length=1, 
-		choices=(('0','No toppings'), ('1','Pre-selected'), ('2','No more than..'), ('3','Select from all'), ('4', 'Additions')), 
+		choices= TOPPING_OPTIONS,
 		default = ('0','No toppings'),
 		help_text="Allow users select toppings", 
 		verbose_name = "Topping Options")

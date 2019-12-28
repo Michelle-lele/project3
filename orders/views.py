@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserRegisterForm
-from .models import pizzaType, Size, Pizza, Sub
+from .models import *
 
 import logging
 
@@ -10,14 +10,20 @@ import logging
 @login_required
 def index(request):
 	pizzaTypes = pizzaType.objects.all()
-	sizes = Size.objects.all()
 	pizzas = Pizza.objects.all()
 	subs = Sub.objects.all()
+	dinnerPlatters = dinnerPlatter.objects.all()
+	pastas = Pasta.objects.all()
+	salads = Salad.objects.all()
+	toppings = Topping.objects.all()
 	return render(request, "orders/index.html",
 		{'pizzaTypes': pizzaTypes,
-		'sizes': sizes,
 		'pizzas': pizzas,
-		'subs': subs},)
+		'subs': subs,
+		'dinnerPlatters': dinnerPlatters,
+		'pastas': pastas,
+		'salads': salads,
+		'toppings': toppings})
 
 def register(request):
 	if request.method == 'POST':

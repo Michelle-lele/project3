@@ -2,6 +2,22 @@
 {% load crispy_forms_tags %}
 {% block body %}
 
+{% for pizza in pizzas %}
+	<ul>
+		<li>{{ pizza.name }}: {{ pizza.toppingOption }}-{{ pizza.get_toppingOption_display }}</li>
+		{% if pizza.toppings %}
+			<ul>
+				{% for topping in pizza.toppings.all %}
+				<li>{{ topping }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+		{% if pizza.maxToppings %}
+			Max.Toppings: {{ pizza.maxToppings }}
+		{% endif %}
+	</ul>
+{% endfor %}
+
 {% if pizzas %}
 	{% for pizzaType in pizzaTypes %}
 		<h1>Pizza {{ pizzaType.type }}</h1>
@@ -14,22 +30,16 @@
 				{% ifequal pizza.type.type pizzaType.type %}
 					<tr>
 						<td>{{ pizza.name }}</td>
-						<td>
-							<select>
-							{% for size in sizes %}
-								<option>{{ size }}</option>
-							{% endfor %}
-							</select>
-						</td>
+						<td>{{ pizza.size }}</td>
 						<td>{{ pizza.price }}</td>
-						<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ pizza.id }}">Add</button></td>
+						<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ pizza.id }}">Add</button></td>
 					</tr>
 				{% endifequal %}
 			{% endfor %}
 		</table>
 	{% endfor %}
-	
 {% endif %}
+
 	{% if subs %}
 	<h1>Subs</h1>
 	<table class="table">
@@ -42,8 +52,9 @@
 				<td>{{ sub.name }}</td>
 				<td>{{ sub.size }}</td>
 				<td>{{ sub.price }}</td>
-				<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ sub.id }}">Add</button></td>
+				<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ sub.id }}">Add</button></td>
 			</tr>
+			<!--
 			{% if sub.toppings %}
 				{% for topping in sub.toppings.all %}
 					<tr>
@@ -53,9 +64,61 @@
 					</tr>
 				{% endfor %}
 			{% endif %}
+			-->
 		{% endfor %}
 	</table>
 	{% endif %}
+
+{% if dinnerPlatters %}
+		<h1>Dinner Platters</h1>
+		<table class="table">
+			<th>Name</th>
+			<th>Size</th>
+			<th>Price</th>
+			<th></th>
+			{% for dinnerPlatter in dinnerPlatters %}
+				<tr>
+					<td>{{ dinnerPlatter.name }}</td>
+					<td>{{ dinnerPlatter.size }}</td>
+					<td>{{ dinnerPlatter.price }}</td>
+					<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ dinnerPlatter.id }}">Add</button></td>
+				</tr>
+			{% endfor %}
+		</table>
+{% endif %}
+
+{% if pastas %}
+		<h1>Pasta</h1>
+		<table class="table">
+			<th>Name</th>
+			<th>Price</th>
+			<th></th>
+			{% for pasta in pastas %}
+				<tr>
+					<td>{{ pasta.name }}</td>
+					<td>{{ pasta.price }}</td>
+					<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ pasta.id }}">Add</button></td>
+				</tr>
+			{% endfor %}
+		</table>
+{% endif %}
+
+{% if salads %}
+		<h1>Salads</h1>
+		<table class="table">
+			<th>Name</th>
+			<th>Price</th>
+			<th></th>
+			{% for salad in salads %}
+				<tr>
+					<td>{{ salad.name }}</td>
+					<td>{{ salad.price }}</td>
+					<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ salad.id }}">Add</button></td>
+				</tr>
+			{% endfor %}
+		</table>
+{% endif %}
+
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -69,12 +132,78 @@
       <div class="modal-body" id="modal-body">
         <form id="modal-options-form">
         </form>
+        <div id="item-details">
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" type="submit">Add to Cart</button>
+        <button type="button" class="add-item-btn btn btn-primary" type="submit">Add to Cart</button>
       </div>
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+	
+	document.addEventListener('DOMContentLoaded', ()=>{
+	var addBtn = document.getElementsByClassName('add-item-btn');
+	var addItemBody = document.querySelector('#modal-body');
+	var addItemForm = document.querySelector('#modal-options-form');
+	var addItemTitle = document.querySelector('#exampleModalLongTitle');
+	var addItemDetails = document.querySelector('#item-details');
+	
+	//get all possible toppings/additions
+	var allToppings = [];
+	{% for topping in toppings %}
+		allToppings.push("{{topping}}");
+	{% endfor %}
+	
+	loadToppings(); 
+
+	//Listener for clicking the Add button
+	for (var i = 0 ; i < addBtn.length; i++) {
+   		addBtn[i].addEventListener('click' , ()=>{
+   		//TODO how to get the topping Option value for an item?
+		showToppings(3);
+		addItemTitle.innerHTML = `Add to Cart ${event.target.dataset.id}`;
+		});
+	}
+
+	function loadToppings(){
+		for (var i = 0; i < allToppings.length; i++){
+			var label = document.createElement("label");
+
+			var topping = document.createElement('input');
+			topping.setAttribute('type', 'checkbox');
+			topping.value = allToppings[i];
+			label.appendChild(topping)
+
+			var text = document.createTextNode(allToppings[i]);
+			label.appendChild(text);
+
+			addItemForm.appendChild(label);
+
+			var br = document.createElement('br');
+			addItemForm.appendChild(br);
+
+		}
+	};
+
+	function showToppings(toppingOption){
+		if (toppingOption > 0 && toppingOption < 4){
+			addItemBody.style.display = "block";
+		}
+		else{
+			addItemBody.style.display = "none";
+		}
+	};
+	/* 
+	//identify the item clicked
+	//show the item data in the modal
+	- name, size, price (to get them from the page or from request?)
+	- and toppings or additions (add additional price when it is an addition)
+	*/
+});
+</script>
+
 {% endblock body %}
