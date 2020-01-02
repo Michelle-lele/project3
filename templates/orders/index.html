@@ -146,64 +146,76 @@
 <script type="text/javascript">
 	
 	document.addEventListener('DOMContentLoaded', ()=>{
-	var addBtn = document.getElementsByClassName('add-item-btn');
-	var addItemBody = document.querySelector('#modal-body');
-	var addItemForm = document.querySelector('#modal-options-form');
-	var addItemTitle = document.querySelector('#exampleModalLongTitle');
-	var addItemDetails = document.querySelector('#item-details');
-	
-	//get all possible toppings/additions
-	var allToppings = [];
-	{% for topping in toppings %}
-		allToppings.push("{{topping}}");
-	{% endfor %}
-	
-	loadToppings(); 
+		var addItemBtn = document.getElementsByClassName('add-item-btn');
+		var addItemBody = document.querySelector('#modal-body');
+		var addItemForm = document.querySelector('#modal-options-form');
+		var addItemTitle = document.querySelector('#exampleModalLongTitle');
+		var addItemDetails = document.querySelector('#item-details');
+		
+		//get all possible toppings/additions
+		var allToppings = [];
+		{% for topping in toppings %}
+			allToppings.push("{{topping}}");
+		{% endfor %}
 
-	//Listener for clicking the Add button
-	for (var i = 0 ; i < addBtn.length; i++) {
-   		addBtn[i].addEventListener('click' , ()=>{
-   		//TODO how to get the topping Option value for an item?
-		showToppings(3);
-		addItemTitle.innerHTML = `Add to Cart ${event.target.dataset.id}`;
-		});
-	}
-
-	function loadToppings(){
-		for (var i = 0; i < allToppings.length; i++){
-			var label = document.createElement("label");
-
-			var topping = document.createElement('input');
-			topping.setAttribute('type', 'checkbox');
-			topping.value = allToppings[i];
-			label.appendChild(topping)
-
-			var text = document.createTextNode(allToppings[i]);
-			label.appendChild(text);
-
-			addItemForm.appendChild(label);
-
-			var br = document.createElement('br');
-			addItemForm.appendChild(br);
-
+		//Listener for clicking the Add button
+		for (var i = 0 ; i < addItemBtn.length; i++) {
+	   		addItemBtn[i].addEventListener('click' , ()=>{
+	   		//TODO how to get the topping Option value for an item since it could be different models using it
+			showItemAddOptions(3);
+			addItemTitle.innerHTML = `Add to Cart ${event.target.dataset.id}`;
+			});
 		}
-	};
 
-	function showToppings(toppingOption){
-		if (toppingOption > 0 && toppingOption < 4){
-			addItemBody.style.display = "block";
-		}
-		else{
-			addItemBody.style.display = "none";
-		}
-	};
-	/* 
-	//identify the item clicked
-	//show the item data in the modal
-	- name, size, price (to get them from the page or from request?)
-	- and toppings or additions (add additional price when it is an addition)
-	*/
-});
+		function loadToppings(){
+			for (var i = 0; i < allToppings.length; i++){
+				var label = document.createElement("label");
+
+				var topping = document.createElement('input');
+				topping.setAttribute('type', 'checkbox');
+				topping.value = allToppings[i];
+				label.appendChild(topping)
+
+				var text = document.createTextNode(allToppings[i]);
+				label.appendChild(text);
+
+				addItemForm.appendChild(label);
+
+				var br = document.createElement('br');
+				addItemForm.appendChild(br);
+
+			}
+		};
+
+		function showItemAddOptions(toppingOption){
+			addItemForm.innerHTML = "";
+
+			//('0','No toppings')- no toppings can be chosen for that item
+			//('1','Pre-selected')- the toppings are fixed and cannot be changed by user
+			if (toppingOption == 1){
+				//get the selected toppings, check them and disable all
+			}
+			//('2','No more than..')- the user can select from all toppings up to a maximum
+			if (toppingOption == 2){
+				//get the maxToppings value
+			}
+			//('3','Select from all')- the user can select from all toppings without limitations
+			if (toppingOption == 3){
+				loadToppings();
+			}
+			//('4','Additions')- any selected topping costs extra
+			if (toppingOption == 4){
+				//get the selected toppings
+			}
+			
+		};
+		/* 
+		//identify the item clicked
+		//show the item data in the modal
+		- name, size, price (to get them from the page or from request?)
+		- and toppings or additions (add additional price when it is an addition)
+		*/
+	});
 </script>
 
 {% endblock body %}

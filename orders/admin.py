@@ -4,6 +4,9 @@ from .models import *
 # Register your models here.
 admin.site.site_header = 'Pinnochio\'s Pizza Orders'
 
+admin.site.register(Order)
+admin.site.register(orderItem)
+
 class ToppingAdmin(admin.ModelAdmin):
 	list_display = ('name', 'price')
 
@@ -58,10 +61,3 @@ class dinnerPlatterAdmin(admin.ModelAdmin):
 
 admin.site.register(dinnerPlatter, dinnerPlatterAdmin)
 
-class pizzaTypeAdmin(admin.ModelAdmin):
-	list_display= ('type',)
-admin.site.register(pizzaType, pizzaTypeAdmin)
-
-class SizeAdmin(admin.ModelAdmin):
-	list_display= ('size',)
-admin.site.register(Size, SizeAdmin)

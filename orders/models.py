@@ -1,14 +1,20 @@
 from django.db import models
 from django.core.validators import validate_comma_separated_integer_list
+from django.contrib.auth.models import User
 
-# Create your models here.
+SIZES = (
+	('R','Regular'),
+	('S','Small'),
+	('L','Large')
+	)
 
-class abstractMenuItem(models.Model):
+class Item(models.Model):
 	name = models.CharField(max_length=64)
 	price = models.DecimalField(decimal_places=2,max_digits=10, default=0)
+	size = models.CharField(choices=SIZES, max_length=64, default="R")
 
-	class Meta:
-		abstract = True
+	def __str__(self):
+		return f"{self.name}, {self.size}, ${self.price}"
 
 TOPPING_OPTIONS = (
 	('0','No toppings'), 
@@ -22,7 +28,7 @@ class abstractToppingConfig(models.Model):
 	toppingOption = models.CharField(max_length=1, 
 		choices= TOPPING_OPTIONS,
 		default = ('0','No toppings'),
-		help_text="Allow users select toppings", 
+		help_text="Allow users to select toppings", 
 		verbose_name = "Topping Options")
 	maxToppings =  models.PositiveSmallIntegerField(blank=True, null=True, default=0, verbose_name = "Max. toppings")
 	toppings = models.ManyToManyField("Topping", blank=True)
@@ -41,47 +47,56 @@ class abstractToppingConfig(models.Model):
 	class Meta:
 		abstract = True
 
-class Size(models.Model):
-	size = models.CharField(max_length=64, default="Small")
-
-	def __str__(self):
-		return f"{self.size}"
-
 class pizzaType(models.Model):
-	type = models.CharField(max_length=64, verbose_name = "Pizza type")
+	type = models.CharField(max_length=64, default="Regular", verbose_name = "Pizza type")
 
 	def __str__(self):
 		return f"{self.type}"
 
-class Topping(abstractMenuItem):
+class Topping(Item):
 	def __str__(self):
 		return f"{self.name}"
  
-class Pizza(abstractMenuItem, abstractToppingConfig):
+class Pizza(Item, abstractToppingConfig):
 	type = models.ForeignKey(pizzaType, on_delete=models.CASCADE)
-	size = models.ForeignKey(Size, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return f"{self.type} {self.name}, {self.size}"
 
-class Sub(abstractMenuItem, abstractToppingConfig):
-	size = models.ForeignKey(Size, on_delete=models.CASCADE)
-
-	additions = []
+class Sub(Item, abstractToppingConfig):
 
 	def __str__(self):
 		return f"{self.name} {self.size}"	
 
-class Pasta(abstractMenuItem):
+class Pasta(Item):
 	def __str__(self):
 		return f"{self.name}"
 
-class Salad(abstractMenuItem):
+class Salad(Item):
 	def __str__(self):
 		return f"{self.name}"
 
-class dinnerPlatter(abstractMenuItem):
-	size = models.ForeignKey(Size, on_delete=models.CASCADE)
+class dinnerPlatter(Item):
 
 	def __str__(self):
 		return f"{self.name} {self.size}"
+
+class orderItem(models.Model):
+	item = models.ForeignKey(Item, on_delete=models.CASCADE)
+	quantity = models.IntegerField(default=1)
+	hasToppings = models.ManyToManyField("Topping", blank=True, related_name="hasToppings")
+	hasAdditions = models.ManyToManyField("Topping", blank=True, related_name = "hasAdditions")
+
+	def __str__(self):
+		return f"{self.quantity} X {self.item}"
+
+class Order(models.Model):
+	orderItem = models.ManyToManyField("orderItem")
+	orderedDate = models.DateTimeField(blank=True, null=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	startDate = models.DateTimeField(auto_now_add = True)
+	ordered = models.BooleanField(default="False")
+	# order total???
+	
+	def __str__(self):
+		return f"Order #{self.id}"
