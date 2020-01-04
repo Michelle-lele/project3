@@ -30,7 +30,7 @@
 				{% ifequal pizza.type.type pizzaType.type %}
 					<tr>
 						<td>{{ pizza.name }}</td>
-						<td>{{ pizza.size }}</td>
+						<td>{{ pizza.get_size_display }}</td>
 						<td>{{ pizza.price }}</td>
 						<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ pizza.id }}">Add</button></td>
 					</tr>
@@ -50,7 +50,7 @@
 		{% for sub in subs %}
 			<tr>
 				<td>{{ sub.name }}</td>
-				<td>{{ sub.size }}</td>
+				<td>{{ sub.get_size_display }}</td>
 				<td>{{ sub.price }}</td>
 				<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ sub.id }}">Add</button></td>
 			</tr>
@@ -79,7 +79,7 @@
 			{% for dinnerPlatter in dinnerPlatters %}
 				<tr>
 					<td>{{ dinnerPlatter.name }}</td>
-					<td>{{ dinnerPlatter.size }}</td>
+					<td>{{ dinnerPlatter.get_size_display }}</td>
 					<td>{{ dinnerPlatter.price }}</td>
 					<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ dinnerPlatter.id }}">Add</button></td>
 				</tr>

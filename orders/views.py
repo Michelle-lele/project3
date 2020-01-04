@@ -9,6 +9,7 @@ import logging
 # Create your views here.
 @login_required
 def index(request):
+	items = Item.objects.all()
 	pizzaTypes = pizzaType.objects.all()
 	pizzas = Pizza.objects.all()
 	subs = Sub.objects.all()
@@ -17,7 +18,8 @@ def index(request):
 	salads = Salad.objects.all()
 	toppings = Topping.objects.all()
 	return render(request, "orders/index.html",
-		{'pizzaTypes': pizzaTypes,
+		{'items': items,
+		'pizzaTypes': pizzaTypes,
 		'pizzas': pizzas,
 		'subs': subs,
 		'dinnerPlatters': dinnerPlatters,

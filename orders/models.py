@@ -48,7 +48,7 @@ class abstractToppingConfig(models.Model):
 		abstract = True
 
 class pizzaType(models.Model):
-	type = models.CharField(max_length=64, default="Regular", verbose_name = "Pizza type")
+	type = models.CharField(max_length=64, verbose_name = "Pizza type")
 
 	def __str__(self):
 		return f"{self.type}"
