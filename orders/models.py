@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import validate_comma_separated_integer_list
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 SIZES = (
 	('R','Regular'),
@@ -31,19 +33,26 @@ class abstractToppingConfig(models.Model):
 		help_text="Allow users to select toppings", 
 		verbose_name = "Topping Options")
 	maxToppings =  models.PositiveSmallIntegerField(blank=True, null=True, default=0, verbose_name = "Max. toppings")
-	toppings = models.ManyToManyField("Topping", blank=True)
+	preselectedToppings = models.ManyToManyField("Topping", blank=True, verbose_name="Pre-selected Toppings")
 
-	'''TODO validation of the toppings data on object init/update how?
-		if toppingOption == '0' or toppingOption == '3':
-			#set maxtoppings & toppings to null
-		elif toppingOption == '1' or toppingOption == '4':
-			# maxtoppings to null
-			# toppings is required
-		elif toppingOption == '2':
-			#admin doesn't have to preselect the toppings
-			#maxtoppings is required
-			#toppings to null
-	'''
+	def clean(self):
+		if self.toppingOption == '0' or self.toppingOption == '3':
+			self.maxToppings = None
+			#TODO figure how to clear the MM relationship here and on the below line
+			self.preselectedToppings.clear()
+		elif self.toppingOption == '1' or self.toppingOption == '4':
+			if self.preselectedToppings is None:
+				raise ValidationError(
+					_('You should select at least 1 topping!')
+					)
+			self.maxToppings = None
+		elif self.toppingOption == '2':
+			if self.maxToppings is None:
+				raise ValidationError({'maxToppings':
+					_('Maximum Toppings is required!')
+					})
+			self.preselectedToppings.clear()
+
 	class Meta:
 		abstract = True
 
@@ -96,7 +105,7 @@ class Order(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	startDate = models.DateTimeField(auto_now_add = True)
 	ordered = models.BooleanField(default="False")
-	# order total???
+	# order total method & attribute???
 	
 	def __str__(self):
 		return f"Order #{self.id}"

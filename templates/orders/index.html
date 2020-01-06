@@ -1,6 +1,7 @@
 {% extends "orders/base.html" %}
 {% load crispy_forms_tags %}
 {% block body %}
+{% load custom-tags %}
 
 {% for pizza in pizzas %}
 	<ul>
@@ -29,7 +30,7 @@
 			{% for pizza in pizzas %}
 				{% ifequal pizza.type.type pizzaType.type %}
 					<tr>
-						<td>{{ pizza.name }}</td>
+						<td>{{ pizza.name|hello}}</td>
 						<td>{{ pizza.get_size_display }}</td>
 						<td>{{ pizza.price }}</td>
 						<td><button type="button" class="add-item-btn btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ pizza.id }}">Add</button></td>

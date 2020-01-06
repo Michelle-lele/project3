@@ -9,8 +9,15 @@ admin.site.register(orderItem)
 
 class ToppingAdmin(admin.ModelAdmin):
 	list_display = ('name', 'price')
+	fieldsets = (
+		(None, {
+			'fields': ('name','price')
+		}),
+	)
 
 admin.site.register(Topping, ToppingAdmin)
+
+
 
 class PizzaAdmin(admin.ModelAdmin):
 	list_display = ('type','name','size','toppingOption','price')
@@ -22,7 +29,7 @@ class PizzaAdmin(admin.ModelAdmin):
 		}),
 		('Advanced options', {
 			'classes': ('collapse',),
-			'fields': (('toppingOption', 'maxToppings'), 'toppings'),
+			'fields': (('toppingOption', 'maxToppings'), 'preselectedToppings'),
 		}),
 	)
 
@@ -39,7 +46,7 @@ class SubAdmin(admin.ModelAdmin):
 		}),
 		('Advanced options', {
 			'classes': ('collapse',),
-			'fields': (('toppingOption', 'maxToppings'), 'toppings'),
+			'fields': (('toppingOption', 'maxToppings'), 'preselectedToppings'),
 		}),
 	)
 
@@ -47,17 +54,32 @@ admin.site.register(Sub, SubAdmin)
 
 class PastaAdmin(admin.ModelAdmin):
 	list_display=('name','price')
+	fieldsets = (
+		(None, {
+			'fields': ('name','price')
+		}),
+	)
 
 admin.site.register(Pasta, PastaAdmin)
 
 class SaladAdmin(admin.ModelAdmin):
 	list_display = ('name', 'price')
+	fieldsets = (
+		(None, {
+			'fields': ('name','price')
+		}),
+	)
 
 admin.site.register(Salad, SaladAdmin)
 
 class dinnerPlatterAdmin(admin.ModelAdmin):
 	list_display= ('name','size', 'price')
 	list_filter = ('size',)
+	fieldsets = (
+		(None, {
+			'fields': ('name','price')
+		}),
+	)
 
 admin.site.register(dinnerPlatter, dinnerPlatterAdmin)
 
