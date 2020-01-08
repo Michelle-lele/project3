@@ -69,6 +69,13 @@ class Topping(Item):
 class Pizza(Item, abstractToppingConfig):
 	type = models.ForeignKey(pizzaType, on_delete=models.CASCADE)
 
+	#TODO check to see why Item object is not saved
+	def save(self, *args, **kwargs):
+		newItem = Item(name=self.name,price=self.price, size=self.size)
+		newItem.save()
+		super().save(*args, **kwargs)
+
+
 	def __str__(self):
 		return f"{self.type} {self.name}, {self.size}"
 

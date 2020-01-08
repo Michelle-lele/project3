@@ -4,11 +4,12 @@
 {% load custom-tags %}
 
 {% for pizza in pizzas %}
+<h2>This is it #78 {{ pizza|get_by_id:4}}</h2>
 	<ul>
 		<li>{{ pizza.name }}: {{ pizza.toppingOption }}-{{ pizza.get_toppingOption_display }}</li>
-		{% if pizza.toppings %}
+		{% if pizza.preselectedToppings %}
 			<ul>
-				{% for topping in pizza.toppings.all %}
+				{% for topping in pizza.preselectedToppings.all %}
 				<li>{{ topping }}</li>
 				{% endfor %}
 			</ul>

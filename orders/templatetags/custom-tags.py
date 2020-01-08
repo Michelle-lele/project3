@@ -1,4 +1,5 @@
 from django import template
+from orders.models import Pizza, Sub
 
 register = template.Library()
 
@@ -6,6 +7,14 @@ register = template.Library()
 def hello(value):
 	return value + " Hello!"
 
-def get_id(value):
+@register.filter
+def get_by_id(value,pk):
 	# get item object id and return all of its data...how to determine which model?
-	return "Data"
+	if not Pizza.objects.filter(pk=pk):
+		return "No pizza for you"
+	elif not Sub.objects.filter(pk=pk):
+		return "No sub for you"
+	
+	return f"Woooow! {pk} is here!"
+		
+
