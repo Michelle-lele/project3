@@ -6,7 +6,6 @@ from .models import *
 
 import logging
 
-# Create your views here.
 @login_required
 def index(request):
 	items = Item.objects.all()

@@ -32,8 +32,13 @@ class abstractToppingConfig(models.Model):
 		default = ('0','No toppings'),
 		help_text="Allow users to select toppings", 
 		verbose_name = "Topping Options")
-	maxToppings =  models.PositiveSmallIntegerField(blank=True, null=True, default=0, verbose_name = "Max. toppings")
-	preselectedToppings = models.ManyToManyField("Topping", blank=True, verbose_name="Pre-selected Toppings")
+	maxToppings =  models.PositiveSmallIntegerField(blank=True, 
+		null=True, 
+		default=0, 
+		verbose_name = "Max. toppings")
+	preselectedToppings = models.ManyToManyField("Topping", 
+		blank=True, 
+		verbose_name="Pre-selected Toppings")
 
 	def clean(self):
 		if self.toppingOption == '0' or self.toppingOption == '3':
@@ -70,17 +75,19 @@ class Pizza(Item, abstractToppingConfig):
 	type = models.ForeignKey(pizzaType, on_delete=models.CASCADE)
 
 	#TODO check to see why Item object is not saved
+	
 	def save(self, *args, **kwargs):
-		newItem = Item(name=self.name,price=self.price, size=self.size)
-		newItem.save()
-		super().save(*args, **kwargs)
-
+		if not self.id:
+			newItem = Item(name=self.name, price=self.price, size=self.size)
+			newItem.save()
+			self.item_ptr = newItem
+		super(Pizza, self).save(*args, **kwargs)
+	
 
 	def __str__(self):
 		return f"{self.type} {self.name}, {self.size}"
 
 class Sub(Item, abstractToppingConfig):
-
 	def __str__(self):
 		return f"{self.name} {self.size}"	
 
@@ -93,15 +100,18 @@ class Salad(Item):
 		return f"{self.name}"
 
 class dinnerPlatter(Item):
-
 	def __str__(self):
 		return f"{self.name} {self.size}"
 
 class orderItem(models.Model):
 	item = models.ForeignKey(Item, on_delete=models.CASCADE)
 	quantity = models.IntegerField(default=1)
-	hasToppings = models.ManyToManyField("Topping", blank=True, related_name="hasToppings")
-	hasAdditions = models.ManyToManyField("Topping", blank=True, related_name = "hasAdditions")
+	hasToppings = models.ManyToManyField("Topping", 
+		blank=True, 
+		related_name="hasToppings")
+	hasAdditions = models.ManyToManyField("Topping", 
+		blank=True, 
+		related_name = "hasAdditions")
 
 	def __str__(self):
 		return f"{self.quantity} X {self.item}"
